@@ -1,0 +1,8 @@
+Set-Content -Path .gitignore -Value @"
+/imagesToupload
+/Front-End/E-comm/node_modules
+/Documentation
+/Back-End/node_modules
+/Back-End/uploads
+/Back-End/dist
+"@
