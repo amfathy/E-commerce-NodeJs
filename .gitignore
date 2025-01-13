@@ -5,4 +5,5 @@ Set-Content -Path .gitignore -Value @"
 /Back-End/node_modules
 /Back-End/uploads
 /Back-End/dist
+/Back-End/src/.env
 "@
