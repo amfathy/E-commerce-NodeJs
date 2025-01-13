@@ -1,17 +1,17 @@
-export  enum UserRole {
+ enum UserRole {
     Admin = 'admin',
     User = 'user',
     Guest = 'guest'
 }
 
-export  type Address = {
+ type Address = {
     street:String;
     city:String;
     state:String;
     zip:String;
 }
 
-export  interface IUser {
+ interface IUser {
     name:string;
     email:string;
     password:string;
@@ -22,6 +22,9 @@ export  interface IUser {
     updated_at:Date;
 
 }
+export type{ Address , IUser}; 
+export {UserRole};
+ 
 
 
 

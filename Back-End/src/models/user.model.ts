@@ -1,6 +1,5 @@
 import mongoose, { Schema, Types } from "mongoose";
 import { IUser, UserRole, Address } from "../interfaces/User";
-// import bcrypt from "bcrypt";
 
 const addressSchema = new mongoose.Schema<Address>({
     street: {
@@ -73,22 +72,13 @@ const userSchema = new mongoose.Schema<IUser>({
     }
 });
 
-// // Pre-save hook to hash password and update `updated_at` for User
-// userSchema.pre<IUser>("save", async function (next) {
-//     if (this.isModified("password")) {
-//         const salt = await bcrypt.genSalt(10);
-//         this.password = await bcrypt.hash(this.password, salt);
-//     }
-//     this.updated_at = new Date();
-//     next();
-// });
 
 
-const Address = mongoose.model<Address>("Address", addressSchema);
+const address = mongoose.model<Address>("Address", addressSchema);
 const User = mongoose.model<IUser>("User", userSchema);
 
 
 export default {
     User,
-    Address,
+    address
 };

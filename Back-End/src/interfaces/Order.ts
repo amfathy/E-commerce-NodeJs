@@ -7,6 +7,7 @@ interface IOrder {
     created_at: Date;
     updated_at: Date;
     status: OrderStatus;
+
 }
 
 interface IOrderItem {
