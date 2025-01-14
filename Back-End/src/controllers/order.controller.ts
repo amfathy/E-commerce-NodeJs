@@ -1,3 +1,4 @@
+import { Schema } from "mongoose";
 import { IOrder } from "../interfaces/Order";
 import { IOrderItem } from "../interfaces/Order";
 import OrderModel from "../models/order.model";
@@ -42,6 +43,8 @@ const getOrders = async (req: Request, res: Response): Promise<void> => {
       : res.status(500).json({ message: "An unknown error occurred" });
   }
 };
+
+
 
 export default {
   createOrder,

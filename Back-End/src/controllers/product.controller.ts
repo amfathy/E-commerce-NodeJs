@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import Product from "../models/product.model";
 import IProduct from "../interfaces/Product";
+import { stringify } from "querystring";
 
 const createProduct = async (req: Request, res: Response): Promise<void> => {
   const images = req.files
@@ -71,8 +72,52 @@ const getProductById = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+//map to validate the updated fields that user sends 
+const validFields : { [key:string] : (value:any) => boolean} = {
+  quantity : (value) => typeof value ==="number" && value >= 0 ,
+  title : (value) => typeof value ==="string" && value.trim().length>0,
+  price : (value) => typeof value ==="number" && value >= 0 , 
+  discription : (value) => typeof value ==="string" && value.trim().length >0 
+}
+
+const changeProductDetails = async (req:Request , res: Response): Promise<void> =>{
+  try {
+      const {_id , ...updateFields} =  req.body;
+      if(!_id) res.status(401).json("Invalid Id");
+
+      
+      for( const [key,value] of Object.entries(updateFields) ){
+        const validate = validFields[key] ; 
+        console.log("Checking field:", validate);
+        
+        if(!validate) {
+          res.status(404).json(`Properity not exist  ${key} `); 
+          return ; 
+        } 
+        if(!validate(value)) {
+          res.status(402).json(`properity value not correct try to change it  ${key}`);
+          return ; 
+        } 
+      }
+      const updatedProduct = Product.findByIdAndUpdate(_id , updateFields , {new : true});
+      if(!updatedProduct) res.status(404).json("Product not Found"); 
+
+      res.status(201).json(
+        `"Product updated successfully\n"  
+        ${updatedProduct}`
+      )
+    }catch(err){
+      err instanceof Error ? 
+      res.status(400).json(err.message)
+      :res.status(400).json("unknown Error"); 
+    }
+}
+
 export default {
   createProduct,
   getProducts,
   getProductById,
+  changeProductDetails,
+
 };
+
