@@ -1,4 +1,4 @@
-import subcategory from "../controllers/subcategory";
+import subcategory from "../controllers/subcategory.controller";
 import express from 'express'; 
 const router = express.Router();
 

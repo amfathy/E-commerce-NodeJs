@@ -1,20 +1,42 @@
 import ICategory from "../interfaces/Category";
 import { Request, Response } from "express";
 import Category from "../models/cateogry.model";
+import categoryValidation from "../validation/category.validation";
+
+const validation = (body : unknown) => {
+  return categoryValidation.safeParse(body); 
+} 
+
+const isExsiting = (nameofCateogry : string) => {
+  return Category.findOne({name :nameofCateogry}) 
+}
 
 const createCategory = async (req: Request, res: Response): Promise<void> => {
   try {
-    const isExsiting = await Category.findOne({ name: req.body.name });
-    if (isExsiting)
-      res
-        .status(400)
-        .json({ message: "Category already exists or change name" });
+    const parsedData = validation(req.body); 
 
+    if(!parsedData.success){
+         res.status(400).json({
+        message: "Validation failed",
+        errors: parsedData.error.errors,  // Zod validation error details
+      });
+      return ; 
+    }
+    
+     const Found = await isExsiting(req.body.name);
+
+    if (Found){
+      res.status(400)
+      .json({ message: "Category already exists or change name" });
+      return ; 
+    }
+      
     const { name, description }: ICategory = req.body;
     await Category.create({
       name,
       description,
     });
+    
     res.status(201).json({ message: "Category created successfully" });
   } catch (err) {
     err instanceof Error

@@ -73,6 +73,7 @@ const getProductById = async (req: Request, res: Response): Promise<void> => {
 };
 
 //map to validate the updated fields that user sends 
+
 const validFields : { [key:string] : (value:any) => boolean} = {
   quantity : (value) => typeof value ==="number" && value >= 0 ,
   title : (value) => typeof value ==="string" && value.trim().length>0,
