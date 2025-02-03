@@ -5,17 +5,26 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import hash from "../utils/hashPassword";
 import * as dotenv from "dotenv";
+import validate from "../validation/user.validation";
+
 dotenv.config();
 
+const registervalidation = (body: unknown) => {
+  return validate.userRegisterValidator.safeParse(body);
+};
+
 const RegisterAsUser = async (req: Request, res: Response): Promise<void> => {
+  const parsedData = registervalidation(req.body);
+  if (!parsedData.success) {
+    res.status(400).json({
+      message: "validation failed",
+      errors: parsedData.error.errors,
+    });
+  }
+
   const { street, city, state, zip }: Address = req.body.address;
 
-  if (!street || !city || !state || !zip)
-    res.status(400).json({ error: "All fields are required." });
-
   const { name, email, password, address, phone }: IUser = req.body;
-  if (!email || !name || !password || !address || !phone)
-    res.status(400).json({ error: "All fields are required." });
 
   try {
     const addressOfUser = await Schema.address.create({
@@ -53,24 +62,39 @@ const RegisterAsUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+const Loginvalidation = (body: unknown) => {
+  return validate.userLoginValidator.safeParse(body);
+};
+
 const LoginAsUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { email, password } = req.body;
+    const parsedData = Loginvalidation(req.body);
+    if (!parsedData.success) {
+      res.status(400).json({
+        message: "validaiton failed",
+        errors: parsedData.error.errors,
+      });
+    }
 
-    if (!email || !password)
-      res.status(500).json({ Error: "not found Email or Password" });
+    const { email, password } = req.body;
 
     const user = await Schema.User.findOne({ email });
 
-    if (!user) res.status(500).json({ Error: "Email is not dound" });
+    if (!user) {
+      res.status(500).json({ Error: "Email is not dound" });
+      return;
+    }
 
     const authorized = await hash.isMatch(password, user!.password);
 
-    if (!authorized) res.status(404).json({ Error: "wrong password" });
+    if (!authorized) {
+      res.status(404).json({ Error: "wrong password" });
+      return;
+    }
 
-    if (!process.env.JWT_SECRET_KEY) 
+    if (!process.env.JWT_SECRET_KEY)
       throw new Error("JWT_SECRET_KEY is not defined");
-    
+
     const token = jwt.sign({ userId: user!._id }, process.env.JWT_SECRET_KEY, {
       expiresIn: process.env.JWT_EXPIRE_TIME,
     });
@@ -83,9 +107,7 @@ const LoginAsUser = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
-
-
 export default {
   RegisterAsUser,
-  LoginAsUser ,
+  LoginAsUser,
 };

@@ -3,37 +3,37 @@ import Subcategory from "../models/subcategory.model";
 import { Request, Response } from "express";
 import Subcategoryvalidator from "../validation/subCategory.validation";
 
-const validation = (body : unknown) => {
-  return Subcategoryvalidator.safeParse(body); 
-}
+const validation = (body: unknown) => {
+  return Subcategoryvalidator.safeParse(body);
+};
 
-const isExsiting = (nameOfSub : string) => {
-  return  Subcategory.findOne({name : nameOfSub});
-}
+const isExsiting = (nameOfSub: string) => {
+  return Subcategory.findOne({ name: nameOfSub });
+};
+
 const createSubcategory = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  
-  const parsedData = validation(req.body); 
-  
+  const parsedData = validation(req.body);
+
   if (!parsedData.success) {
-     res.status(400).json({
+    res.status(400).json({
       message: "Validation failed",
-      errors: parsedData.error.errors,  // Zod validation error details
+      errors: parsedData.error.errors, // Zod validation error details
     });
-    return ; 
+    return;
   }
 
   try {
-    const Found = await isExsiting( req.body.name);
-    if (Found){
-      res.status(400)
+    const Found = await isExsiting(req.body.name);
+    if (Found) {
+      res
+        .status(400)
         .json({ message: "Subcategory already exists or change name" });
-      return ; 
+      return;
     }
-      
-    
+
     const { name, category_id }: ISubcategory = req.body;
     await Subcategory.create({
       name,
