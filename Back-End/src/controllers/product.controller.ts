@@ -1,124 +1,86 @@
 import { Request, Response } from "express";
-import Product from "../models/product.model";
 import IProduct from "../interfaces/Product";
-import { stringify } from "querystring";
+import ProductService from '../services/ProductService'
+class ProductController {
 
-const createProduct = async (req: Request, res: Response): Promise<void> => {
-  const images = req.files
-    ? (req.files as Express.Multer.File[]).map((file) => file.path)
-    : [];
-  if (images.length === 0)
-    res.status(400).json({ message: "At least one image is required" });
-
-  try {
-    const {
-      name,
-      description,
-      price,
-      category_id,
-      subcategory_id,
-      isStock,
-      quantity,
-    }: IProduct = req.body;
-    await Product.create({
-      name,
-      description,
-      price,
-      category_id,
-      subcategory_id,
-      isStock,
-      images,
-      quantity,
-    });
-
-    res.status(201).json({ message: "Product created successfully" });
-  } catch (err) {
-    err instanceof Error
-      ? res.status(500).json({ message: err.message })
-      : res.status(500).json({ message: "An unknown error occurred" });
-  }
-};
-
-const getProducts = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const products = await Product.find()
-      .populate("category_id")
-      .populate("subcategory_id");
-    res.status(200).json(products);
-  } catch (err) {
-    err instanceof Error
-      ? res.status(500).json({ message: err.message })
-      : res.status(500).json({ message: "An unknown error occurred" });
-  }
-};
-
-const getProductById = async (req: Request, res: Response): Promise<void> => {
-  try {
-    const id = req.query.id;
-    console.log(id);
-    const selectedProduct = await Product.findById(id)
-      .lean()
-      .populate("category_id")
-      .populate("subcategory_id");
-    if (!selectedProduct) 
-      res.status(404).json({ message: "Product not found" });
-    
-    const { stringify } = await import("flatted");
-    res.status(200).json(selectedProduct);
-  } catch (err) {
-    err instanceof Error
-      ? res.status(500).json({ message: err.message })
-      : res.status(500).json({ message: "An unknown error occurred" });
-  }
-};
-
-//map to validate the updated fields that user sends 
-
-const validFields : { [key:string] : (value:any) => boolean} = {
-  quantity : (value) => typeof value ==="number" && value >= 0 ,
-  title : (value) => typeof value ==="string" && value.trim().length>0,
-  price : (value) => typeof value ==="number" && value >= 0 , 
-  discription : (value) => typeof value ==="string" && value.trim().length >0 
-}
-
-const changeProductDetails = async (req:Request , res: Response): Promise<void> =>{
-  try {
-      const {_id , ...updateFields} =  req.body;
-      if(!_id) res.status(401).json("Invalid Id");
-
-      
-      for( const [key,value] of Object.entries(updateFields) ){
-        const validate = validFields[key] ; 
-        console.log("Checking field:", validate);
-        
-        if(!validate) {
-          res.status(404).json(`Properity not exist  ${key} `); 
+  async createProduct(req: Request, res: Response): Promise<void> {
+    try {
+        const images = req.files
+          ? (req.files as Express.Multer.File[]).map((file) => file.path)
+          : [];
+        if (images.length === 0)
+        {
+          res.status(400).json({ message: "At least one image is required" });
           return ; 
-        } 
-        if(!validate(value)) {
-          res.status(402).json(`properity value not correct try to change it  ${key}`);
-          return ; 
-        } 
-      }
-      const updatedProduct = Product.findByIdAndUpdate(_id , updateFields , {new : true});
-      if(!updatedProduct) res.status(404).json("Product not Found"); 
-
-      res.status(201).json(
-        `"Product updated successfully\n"  
-        ${updatedProduct}`
-      )
-    }catch(err){
-      err instanceof Error ? 
-      res.status(400).json(err.message)
-      :res.status(400).json("unknown Error"); 
+        }
+        const {
+          name,
+          description,
+          price,
+          category_id,
+          subcategory_id,
+          isStock,
+          quantity,
+        }: IProduct = req.body;
+        const createdProduct = await ProductService.createProduct(req.body, images);
+        res.status(201).json({
+        message: "Product created successfully",
+        product: createdProduct,
+      });
+    } catch (err) {
+      err instanceof Error
+        ? res.status(500).json({ message: err.message })
+        : res.status(500).json({ message: "An unknown error occurred" });
     }
+  }
+
+  async getProducts(req: Request, res: Response): Promise<void> {
+    try {
+      const products = ProductService.getProducts();
+      res.status(200).json(products);
+    } catch (err) {
+      err instanceof Error
+        ? res.status(500).json({ message: err.message })
+        : res.status(500).json({ message: "An unknown error occurred" });
+    }
+  }
+
+  async getProductById(req: Request, res: Response): Promise<void> {
+    try {
+      const id = req.query.id as string;
+      if (!id) {
+        res.status(400).json({ message: "Product ID is required" });
+        return;
+      }
+      const selectedProduct = await ProductService.getProductByID(id);
+      res.status(200).json(selectedProduct);[]
+    } catch (err) {
+      err instanceof Error
+        ? res.status(500).json({ message: err.message })
+        : res.status(500).json({ message: "An unknown error occurred" });
+    }
+  }
+
+  async changeProductDetails(req: Request, res: Response): Promise<void> {
+    try {
+      const { _id, ...updateFields } = req.body;
+      if (!_id)
+      {
+        res.status(401).json("Invalid Id");
+        return ;
+      }
+      const updatefield = ProductService.updateProductdetails(_id ,updateFields);
+      if(!updateFields){
+        res.status(400).json({ message: "failed updating" });
+        return ;
+      }
+      res.status(201).json({message : "Updated sucessfully"})
+    } catch (err) {
+      err instanceof Error
+        ? res.status(400).json(err.message)
+        : res.status(400).json("unknown Error");
+    }
+  }
 }
 
-export default {
-  createProduct,
-  getProducts,
-  getProductById,
-  changeProductDetails,
-
-};
-
+export default new ProductController();
