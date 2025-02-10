@@ -1,16 +1,18 @@
 import Product from "../models/product.model";
 import IProduct from "../interfaces/Product";
-import {validateProduct , validFields} from "../validation/productValidation"
-import validateId from "../validation/objectIdValidation"
+import { validateProduct, validFields } from "../validation/productValidation";
+import validateId from "../validation/objectIdValidation";
 
 class ProductService {
   async createProduct(data: IProduct, images: string[]): Promise<IProduct> {
     try {
-        const validationResult = validateProduct(data); 
-        if(!validationResult.success)
-            throw new Error(validationResult.error.errors.map(e => e.message).join(", "));
-        
-        const product = await Product.create({
+      const validationResult = validateProduct(data);
+      if (!validationResult.success)
+        throw new Error(
+          validationResult.error.errors.map((e) => e.message).join(", ")
+        );
+
+      const product = await Product.create({
         name: data.name,
         description: data.description,
         price: data.price,
@@ -30,9 +32,11 @@ class ProductService {
     try {
       const id = productId;
       const validationResult = validateId.validateId(id);
-      if(!validationResult.success)
-         throw new Error (validationResult.error.errors.map(e => e.message).join(", "));
-        
+      if (!validationResult.success)
+        throw new Error(
+          validationResult.error.errors.map((e) => e.message).join(", ")
+        );
+
       const selectedProduct = await Product.findById(id)
         .lean()
         .populate("category_id")
@@ -49,22 +53,39 @@ class ProductService {
 
   async getProducts(): Promise<IProduct[]> {
     return await Product.find()
-    .populate("category_id")
-    .populate("subcategory_id");
+      .populate("category_id")
+      .populate("subcategory_id");
   }
 
-  async updateProductdetails(id:string , data : any):Promise<boolean>
-  {
-    for (const item of Object.entries(data)) {
-        const validate = validFields (item);
-        if (!validate) 
-           return false;   
-      }
-      const updatedProduct = Product.findByIdAndUpdate(id, data, {
-        new: true,
-      });
-      if (!updatedProduct)return false;
-    return true;
+  async updateProductdetails(data: any) {
+    const { _id, ...updateFields } = data;
+    if (!_id)
+      return {
+        success: false,
+        message: "invalid Id",
+      };
+
+    for (const item of Object.entries(updateFields)) {
+      const validate = validFields(item);
+      if (validate.success == false)
+        return {
+          success: false,
+          message: validate.message,
+        };
+    }
+    const updatedProduct = await Product.findByIdAndUpdate(_id, data, {
+      new: true,
+    });
+
+    if (!updatedProduct)
+      return {
+        success: false,
+        message: "can't update the product",
+      };
+    return {
+      success: true,
+      message: "Updated successfully",
+    };
   }
 }
 

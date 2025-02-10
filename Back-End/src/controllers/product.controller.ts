@@ -63,24 +63,22 @@ class ProductController {
 
   async changeProductDetails(req: Request, res: Response): Promise<void> {
     try {
-      const { _id, ...updateFields } = req.body;
-      if (!_id)
-      {
-        res.status(401).json("Invalid Id");
-        return ;
+      const updatefield = await ProductService.updateProductdetails(req.body);
+      
+      if(updatefield.success==false){   
+        res.status(400).json({ message: updatefield.message });
+        return ; 
       }
-      const updatefield = ProductService.updateProductdetails(_id ,updateFields);
-      if(!updateFields){
-        res.status(400).json({ message: "failed updating" });
-        return ;
-      }
-      res.status(201).json({message : "Updated sucessfully"})
+
+      res.status(201).json({message : "Updated sucessfully----"});
     } catch (err) {
       err instanceof Error
         ? res.status(400).json(err.message)
         : res.status(400).json("unknown Error");
     }
   }
+
+
 }
 
 export default new ProductController();

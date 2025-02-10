@@ -1,52 +1,35 @@
-import { Schema } from "mongoose";
-import { IOrder } from "../interfaces/Order";
-import { IOrderItem } from "../interfaces/Order";
-import OrderModel from "../models/order.model";
 import { Request, Response } from "express";
-
+import orderService from "../services/order.service";
 const createOrder = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { user_id, items, total, status }: IOrder = req.body;
-    if (!items || !Array.isArray(items) || items.length === 0)
-      res.status(400).json({ message: "Items array cannot be empty." });
-
-    const itemsofOrder: IOrderItem[] = items.map(
-      ({ product_id, quantity, price }) => ({
-        quantity,
-        price,
-        product_id,
-      })
-    );
-
-    const order = await OrderModel.Order.create({
-      user_id,
-      items: itemsofOrder,
-      total,
-      status,
-    });
-
-    res.status(201).json(order);
+    const creation = await orderService.createOrder(req.body);
+    if (!creation.success)
+      res.status(401).json(`Failed creation of order: ${creation.message}`);
+    else res.status(201).json("created successfully");
   } catch (err) {
     err instanceof Error
       ? res.status(500).json({ message: err.message })
-      : res.status(500).json({ message: "An unknown error occurred" });
+      : res
+          .status(500)
+          .json({
+            message: "An exception error occurred in controlling order",
+          });
   }
 };
 
 const getOrders = async (req: Request, res: Response): Promise<void> => {
   try {
-    const orders = await OrderModel.Order.find();
-    res.status(200).json(orders);
+    const orders = await orderService.getOrders();
+    if (!orders.success) res.status(401).json(`error : ${orders.message}`);
+    res.status(200).json(orders.data);
   } catch (err) {
     err instanceof Error
       ? res.status(500).json({ message: err.message })
-      : res.status(500).json({ message: "An unknown error occurred" });
+      : res.status(500).json({ message: "error occurred in controlling" });
   }
 };
 
-
-
 export default {
   createOrder,
-  getOrders,
+   getOrders,
 };
