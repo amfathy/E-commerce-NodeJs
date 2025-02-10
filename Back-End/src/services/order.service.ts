@@ -1,7 +1,8 @@
 import Ordervalidation from "../validation/order.validation";
-import { IOrder, IOrderItem } from "../interfaces/Order";
+import { IOrder } from "../interfaces/Order";
 import orderSchema from "../models/order.model";
-//IorderItem
+//cancel order
+//change status 
 
 class OrderService {
   async createOrder(data: any) {
@@ -89,10 +90,6 @@ class OrderService {
         }
     }
   }
-  
-
-
-
 
 }
 
