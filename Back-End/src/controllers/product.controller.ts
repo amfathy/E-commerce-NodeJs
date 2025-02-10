@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import IProduct from "../interfaces/Product";
 import ProductService from '../services/ProductService'
 class ProductController {
 
@@ -13,15 +12,6 @@ class ProductController {
           res.status(400).json({ message: "At least one image is required" });
           return ; 
         }
-        const {
-          name,
-          description,
-          price,
-          category_id,
-          subcategory_id,
-          isStock,
-          quantity,
-        }: IProduct = req.body;
         const createdProduct = await ProductService.createProduct(req.body, images);
         res.status(201).json({
         message: "Product created successfully",

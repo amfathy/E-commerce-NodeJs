@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { IUser, UserRole, Address } from "../interfaces/User";
 import userSchema from "../models/user.model";
 import bcrypt from "bcryptjs";

@@ -35,7 +35,6 @@ app.use('/orders', orderRoute);
 app.use('/categories', categoryRoute);
 app.use('/subcategories', subcategoryRouter);
 
-// Start the server
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
