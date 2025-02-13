@@ -1,44 +1,16 @@
-import ISubcategory from "../interfaces/Subcategory";
-import Subcategory from "../models/subcategory.model";
 import { Request, Response } from "express";
-import Subcategoryvalidator from "../validation/subCategory.validation";
-
-const validation = (body: unknown) => {
-  return Subcategoryvalidator.safeParse(body);
-};
-
-const isExsiting = (nameOfSub: string) => {
-  return Subcategory.findOne({ name: nameOfSub });
-};
+import SubcategoryService from "../services/subcategory.validation";
 
 const createSubcategory = async (
   req: Request,
   res: Response
 ): Promise<void> => {
-  const parsedData = validation(req.body);
-
-  if (!parsedData.success) {
-    res.status(400).json({
-      message: "Validation failed",
-      errors: parsedData.error.errors, // Zod validation error details
-    });
-    return;
-  }
-
   try {
-    const Found = await isExsiting(req.body.name);
-    if (Found) {
-      res
-        .status(400)
-        .json({ message: "Subcategory already exists or change name" });
+    const creating = await SubcategoryService.createSubcategory(req.body);
+    if (!creating.success) {
+      res.status(401).json(creating.message);
       return;
     }
-
-    const { name, category_id }: ISubcategory = req.body;
-    await Subcategory.create({
-      name,
-      category_id,
-    });
     res.status(201).json({ message: "Subcategory created successfully" });
   } catch (err) {
     err instanceof Error
@@ -49,8 +21,12 @@ const createSubcategory = async (
 
 const getSubcategories = async (req: Request, res: Response): Promise<void> => {
   try {
-    const subcategories = await Subcategory.find();
-    res.status(200).json(subcategories);
+    const gettingData = await SubcategoryService.getSubcategories();
+    if (!gettingData.success) {
+      res.status(401).json(gettingData.message);
+      return;
+    }
+    res.status(200).json(gettingData.data);
   } catch (err) {
     err instanceof Error
       ? res.status(500).json({ message: err.message })

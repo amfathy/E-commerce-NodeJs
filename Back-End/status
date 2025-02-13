@@ -1,2 +1,8 @@
 -I need to check if user exists 
--
+
+
+
+-return {      
+        message : validation.error.errors , 
+        success : false     
+}

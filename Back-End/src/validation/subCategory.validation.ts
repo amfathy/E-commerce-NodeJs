@@ -13,5 +13,7 @@ const subcategorySchema = z.object({
 
 })
 
-export default subcategorySchema ;
+export function subcategoryValidation (data : any) {
+    return subcategorySchema.safeParse(data); 
+};
 

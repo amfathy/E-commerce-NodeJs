@@ -1,6 +1,6 @@
 import Product from "../models/product.model";
 import IProduct from "../interfaces/Product";
-import { validateProduct, validFields } from "../validation/productValidation";
+import { validateProduct, validFields } from "../validation/product.validation";
 import validateId from "../validation/objectIdValidation";
 
 class ProductService {
