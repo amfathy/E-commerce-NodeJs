@@ -1,43 +1,15 @@
-import ICategory from "../interfaces/Category";
 import { Request, Response } from "express";
-import Category from "../models/cateogry.model";
-import categoryValidation from "../validation/category.validation";
-
-const validation = (body : unknown) => {
-  return categoryValidation.safeParse(body); 
-} 
-
-const isExsiting = (nameofCateogry : string) => {
-  return Category.findOne({name :nameofCateogry}) 
-}
+import categoryService from "../services/categoryService";
 
 const createCategory = async (req: Request, res: Response): Promise<void> => {
   try {
-    const parsedData = validation(req.body); 
-
-    if(!parsedData.success){
-         res.status(400).json({
-        message: "Validation failed",
-        errors: parsedData.error.errors,  // Zod validation error details
-      });
-      return ; 
+    const creation = await categoryService.createCateogry(req.body);
+    if (!creation.success) {
+      res.status(401).json({ message: creation.message });
+      return;
     }
-    
-     const Found = await isExsiting(req.body.name);
-
-    if (Found){
-      res.status(400)
-      .json({ message: "Category already exists or change name" });
-      return ; 
-    }
-      
-    const { name, description }: ICategory = req.body;
-    await Category.create({
-      name,
-      description,
-    });
-    
     res.status(201).json({ message: "Category created successfully" });
+    return;
   } catch (err) {
     err instanceof Error
       ? res.status(500).json({ message: err.message })
@@ -47,13 +19,17 @@ const createCategory = async (req: Request, res: Response): Promise<void> => {
 
 const getCategories = async (req: Request, res: Response): Promise<void> => {
   try {
-    const categories = await Category.find();
-    res.status(200).json(categories);
+    const getting = await categoryService.getCategories();
+    if (!getting.success) {
+      res.status(401).json({ message: getting.message });
+    }
+    res.status(200).json({ message: getting.message, Data: getting.data });
   } catch (err) {
     err instanceof Error
       ? res.status(500).json({ message: err.message })
       : res.status(500).json({ message: "An unknown error occurred" });
   }
+  
 };
 
 export default {
