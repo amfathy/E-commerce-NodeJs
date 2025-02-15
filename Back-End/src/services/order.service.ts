@@ -1,4 +1,3 @@
-import Ordervalidation from "../validation/order.validation";
 import { IOrder } from "../interfaces/Order";
 import orderSchema from "../models/order.model";
 //cancel order
@@ -7,13 +6,6 @@ import orderSchema from "../models/order.model";
 class OrderService {
   async createOrder(data: any) {
     try {
-      const validation = Ordervalidation(data);
-      if (!validation.success)
-        return {
-          message: `alidation failed check inputs: ${validation.error}`,
-          success: false,
-        };
-
       const { user_id, items, total, status }: IOrder = data;
       if (!items || !Array.isArray(items) || items.length === 0)
         return {
@@ -59,6 +51,7 @@ class OrderService {
         };
     }
   }
+  
   async getOrders(){
     try{
         const order = await orderSchema.Order.find();

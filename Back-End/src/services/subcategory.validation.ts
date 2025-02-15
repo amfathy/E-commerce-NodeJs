@@ -1,6 +1,5 @@
 import ISubcategory from "../interfaces/Subcategory";
 import subCategorySchema from "../models/subcategory.model";
-import { subcategoryValidation } from "../validation/subCategory.validation";
 
 class SubcategoryService {
   private async isExsiting(nameOfSub: string) {
@@ -13,12 +12,6 @@ class SubcategoryService {
       if (existing)
         return {
           message: "subcategory is exist",
-          success: false,
-        };
-      const validation = subcategoryValidation(data);
-      if (!validation.success)
-        return {
-          message: validation.error.errors,
           success: false,
         };
       const { name, category_id }: ISubcategory = data;

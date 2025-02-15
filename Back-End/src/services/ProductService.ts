@@ -1,20 +1,10 @@
 import Product from "../models/product.model";
 import IProduct from "../interfaces/Product";
-import { validateProduct, validFields } from "../validation/product.validation";
 import validateId from "../validation/objectIdValidation";
 
 class ProductService {
   async createProduct(data: IProduct, images: string[]) {
     try {
-      const validationResult = validateProduct(data);
-      if (!validationResult.success) {
-        return {
-          success: false,
-          message: `Validation failed: ${validationResult.error}`,
-          data: null,
-        };
-      }
-
       const product = await Product.create({
         name: data.name,
         description: data.description,
@@ -42,15 +32,6 @@ class ProductService {
 
   async getProductByID(productId: string) {
     try {
-      const validationResult = validateId.validateId(productId);
-      if (!validationResult.success) {
-        return {
-          success: false,
-          message: validationResult.error.errors.map((e) => e.message).join(", "),
-          data: null,
-        };
-      }
-
       const selectedProduct = await Product.findById(productId)
         .lean()
         .populate("category_id")
@@ -63,7 +44,6 @@ class ProductService {
           data: null,
         };
       }
-
       return {
         success: true,
         message: "Product retrieved successfully",
@@ -108,18 +88,6 @@ class ProductService {
           data: null,
         };
       }
-
-      for (const item of Object.entries(updateFields)) {
-        const validate = validFields(item);
-        if (!validate.success) {
-          return {
-            success: false,
-            message: validate.message,
-            data: null,
-          };
-        }
-      }
-
       const updatedProduct = await Product.findByIdAndUpdate(_id, data, {
         new: true,
       });
@@ -131,7 +99,6 @@ class ProductService {
           data: null,
         };
       }
-
       return {
         success: true,
         message: "Product updated successfully",

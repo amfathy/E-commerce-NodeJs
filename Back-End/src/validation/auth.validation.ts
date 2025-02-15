@@ -1,5 +1,4 @@
-import { z } from "zod";
-
+import { object , z } from "zod";
 
 const addressSchema = z.object({
   street: z.string().min(1, "Street is required").trim(),
@@ -9,7 +8,8 @@ const addressSchema = z.object({
 });
 
 const userRegisterValidator = z.object({
-  name: z
+  body : object({
+    name: z
     .string()
     .min(3, "Name must be at least 3 characters")
     .max(50, "Name must not exceed 50 characters")
@@ -32,12 +32,14 @@ role: z.enum(["Admin", "User", "Guest"]).default("Guest"),
   phone: z
     .string()
     .regex(/^\+?\d{10,15}$/, "Invalid phone number format"),
+  }),
 
   created_at: z.date().default(() => new Date()),
   updated_at: z.date().default(() => new Date()),
 });
 
-const userLoginValidator = z.object({
+export const loginValidation = z.object({
+  body : object({
   password: z
     .string()
     .min(8, "pass must be at least 3 characters")
@@ -49,16 +51,13 @@ const userLoginValidator = z.object({
     .email("Invalid email address format")
     .trim()
     .toLowerCase(),
+  })
 });
 
 
-
-export const registervalidation = (body: unknown) => {
-  return userRegisterValidator.safeParse(body);
-};
-
-export const Loginvalidation = (body : any) => {
-    return userLoginValidator.safeParse(body);
-}
+export const registerValidation = userRegisterValidator.omit({
+  created_at: true,
+  updated_at: true,
+});
 
 

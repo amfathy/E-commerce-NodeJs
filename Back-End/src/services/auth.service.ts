@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import hash from "../utils/hashPassword";
 import * as dotenv from "dotenv";
-import { registervalidation, Loginvalidation } from "../validation/auth.validation";
+// import { registervalidation, Loginvalidation } from "../validation/auth.validation";
 
 dotenv.config();
 
@@ -13,14 +13,6 @@ class AuthService {
 
   async UserRegistration(data: any) {
     try {
-      const validation = registervalidation(data);
-      if (!validation.success) {
-        return {
-          success: false,
-          message: "Validation failed",
-          errors: validation.error.errors,
-        };
-      }
       const { street, city, state, zip }: Address = data.address;
       const { name, email, password, address, phone }: IUser = data;
       const isExist = this.FindUserByEmail(email);
@@ -78,14 +70,6 @@ class AuthService {
 
   async login(data : any)
   {
-    const validation = Loginvalidation(data); 
-    if(!validation.success){
-        return {
-            success: false,
-            message: "Validation failed",
-            errors: validation.error.errors,
-          };
-    } 
     const { email, password } = data;
 
     const user = await userSchema.User.findOne({ email });
