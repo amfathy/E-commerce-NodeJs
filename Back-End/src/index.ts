@@ -9,7 +9,7 @@ import userRouter from './routes/user.routes';
 import subcategoryRouter from './routes/subcategory.routes';
 import RegisterRouter from './routes/auth.routes'
 import DbaseConnection from './config/dataBase';
-
+import ErrorHandler from './middlewares/error.middleware'
 // Configure CORS options
 const corsOptions = {
   origin: "http://localhost:4200", 
@@ -34,6 +34,7 @@ app.use('/products', productRouter);
 app.use('/orders', orderRoute);
 app.use('/categories', categoryRoute);
 app.use('/subcategories', subcategoryRouter);
+app.use(ErrorHandler);
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
