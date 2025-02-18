@@ -50,7 +50,7 @@ const userSchema = new mongoose.Schema<IUser>({
     role: {
         type: String,
         enum: Object.values(UserRole),
-        default: UserRole.Guest,
+        default: UserRole.User,
     },
     address: {
         type: Types.ObjectId,

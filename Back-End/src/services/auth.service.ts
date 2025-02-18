@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import hash from "../utils/hashPassword";
 import * as dotenv from "dotenv";
-// import { registervalidation, Loginvalidation } from "../validation/auth.validation";
 
 dotenv.config();
 
@@ -44,7 +43,7 @@ class AuthService {
       }
 
       const token = jwt.sign(
-        { userId: userCreated._id },
+        { userId: userCreated._id  , role: userCreated.role },
         process.env.JWT_SECRET_KEY,
         { expiresIn: process.env.JWT_EXPIRE_TIME }
       );
@@ -91,7 +90,7 @@ class AuthService {
     if (!process.env.JWT_SECRET_KEY)
       throw new Error("JWT_SECRET_KEY is not defined");
 
-    const Token = jwt.sign({ userId: user!._id }, process.env.JWT_SECRET_KEY, {
+    const Token = jwt.sign({ userId: user!._id ,  role: user!.role }, process.env.JWT_SECRET_KEY, {
       expiresIn: process.env.JWT_EXPIRE_TIME,
     });
 

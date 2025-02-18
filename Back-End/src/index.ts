@@ -10,7 +10,11 @@ import subcategoryRouter from './routes/subcategory.routes';
 import RegisterRouter from './routes/auth.routes'
 import DbaseConnection from './config/dataBase';
 import ErrorHandler from './middlewares/error.middleware'
-// Configure CORS options
+import morgan from 'morgan'
+
+
+// import helmet from 'helmet'
+
 const corsOptions = {
   origin: "http://localhost:4200", 
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
@@ -23,11 +27,13 @@ const port = process.env.PORT || 3000;
 DbaseConnection();
 
 const uploadsPath = path.resolve('uploads'); 
+
 app.use('/uploads', express.static(uploadsPath));
 
 app.use(cors(corsOptions));
 app.use(express.json());
-
+//app.use(helmet()); //imgs 
+app.use(morgan('dev'));
 app.use('/user' ,RegisterRouter );
 app.use('/users', userRouter);
 app.use('/products', productRouter);

@@ -1,7 +1,6 @@
  enum UserRole {
     Admin = 'admin',
     User = 'user',
-    Guest = 'guest'
 }
 
  type Address = {

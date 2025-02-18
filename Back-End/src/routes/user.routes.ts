@@ -1,8 +1,10 @@
 import userController from "../controllers/user.controller";
 import express from 'express';
 const router = express.Router(); 
+import Authorization from "../middlewares/auth.middleware"
 
-router.get('/' , userController.getUsers); 
+//retrieve all users data
+router.get('/' ,Authorization.IsAdmin ,userController.getUsers); 
 
 export default router ; 
 

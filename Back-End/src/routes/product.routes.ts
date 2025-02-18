@@ -3,15 +3,20 @@ import productController from '../controllers/product.controller';
 import upload from '../middlewares/upload';
 import validateResource from '../middlewares/validate.middleware';
 import { productValidation } from '../validation/product.validation';
+import Authorization from "../middlewares/auth.middleware"
 const router = express.Router(); 
 
-router.post('/create' , upload.array('images' , 5 ) ,validateResource(productValidation) , productController.createProduct); 
+//create product by Admin
+router.post('/create' ,Authorization.IsAdmin, upload.array('images' , 5 ) ,validateResource(productValidation) , productController.createProduct); 
 
-router.get('/' , productController.getProducts); 
+//get all product info <<need enhancments>>
+router.get('/' , productController.getProducts  ); 
 
+//get product byId 
 router.get('/id' , productController.getProductById);
 
-router.post('/editProduct' , productController.changeProductDetails);
+//change product details 
+router.post('/editProduct' ,Authorization.IsAdmin ,productController.changeProductDetails);
 
 
 export default router ; 
