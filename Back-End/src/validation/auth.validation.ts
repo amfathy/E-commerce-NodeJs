@@ -31,7 +31,7 @@ role: z.enum(["Admin", "User", "Guest"]).default("Guest"),
 
   phone: z
     .string()
-    .regex(/^\+?\d{10,15}$/, "Invalid phone number format"),
+    //.regex(/^\+?\d{10,15}$/, "Invalid phone number format"),    coz generating fake fomat by seed
   }),
 
   created_at: z.date().default(() => new Date()),

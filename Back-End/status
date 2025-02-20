@@ -13,3 +13,175 @@
 
 - query ? 
 -security owasp
+
+-update static file when delete an image Man!
+
+
+
+E-commerce API
+
+Overview
+
+This project is a backend e-commerce API built using Node.js, Express.js, and MongoDB. It provides a robust and scalable solution for managing an online store, including authentication, product management, order processing, and user management.
+
+Features
+
+User Authentication & Authorization
+
+Register, login, and logout functionality
+
+JWT-based authentication
+
+Role-based access control (Admin, User)
+
+Product Management
+
+Add, update, delete, and list products
+
+Product categories and filtering
+
+Search functionality
+
+Cart Management
+
+Add products to the cart
+
+Remove items from the cart
+
+Update cart items quantity
+
+View cart details
+
+Order Management
+
+Place orders from the cart
+
+Track order status (pending, shipped, delivered)
+
+Order history for users
+
+Payment Integration
+
+Secure payment handling (Stripe, PayPal, etc.)
+
+Order confirmation after successful payment
+
+Admin Dashboard Features
+
+Manage users and orders
+
+Add or remove products
+
+Update order status
+
+Wishlist Feature
+
+Users can add products to their wishlist
+
+Remove items from the wishlist
+
+View wishlist items
+
+Review & Rating System
+
+Users can leave reviews and ratings for products
+
+Admin can manage reviews
+
+Security Features
+
+Password hashing using bcrypt
+
+Secure API endpoints with authentication middleware
+
+Input validation to prevent SQL/NoSQL injection attacks
+
+Technologies Used
+
+Node.js
+
+Express.js
+
+MongoDB & Mongoose
+
+JWT Authentication
+
+Bcrypt for password hashing
+
+Stripe/PayPal for payments
+
+RESTful API principles
+
+Installation & Setup
+
+Clone the repository:
+
+git clone https://github.com/amfathy/E-commerce-NodeJs.git
+
+Navigate to the project directory:
+
+cd E-commerce-NodeJs
+
+Install dependencies:
+
+npm install
+
+Set up environment variables in a .env file:
+
+PORT=5000
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_secret_key
+
+Start the server:
+
+npm start
+
+API Endpoints
+
+Authentication
+
+POST /api/auth/register - User registration
+
+POST /api/auth/login - User login
+
+POST /api/auth/logout - User logout
+
+Products
+
+GET /api/products - Get all products
+
+POST /api/products - Add a new product (Admin only)
+
+PUT /api/products/:id - Update product details (Admin only)
+
+DELETE /api/products/:id - Delete a product (Admin only)
+
+Cart
+
+POST /api/cart - Add to cart
+
+GET /api/cart - View cart
+
+DELETE /api/cart/:id - Remove from cart
+
+Orders
+
+POST /api/orders - Place an order
+
+GET /api/orders - Get user orders
+
+Wishlist
+
+POST /api/wishlist - Add to wishlist
+
+GET /api/wishlist - View wishlist
+
+DELETE /api/wishlist/:id - Remove from wishlist
+
+Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request.
+
+License
+
+This project is open-source and available under the MIT License.

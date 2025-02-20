@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import * as dotenv from "dotenv";
 import AuthRequest from "../interfaces/AuthRequest"
+
 dotenv.config();
 
 class Authorization {
@@ -54,7 +55,7 @@ class Authorization {
       }
 
       if (!decoded.role || decoded.role !== "user") {
-         res.status(403).json({ message: "Access denied. Admins only." });
+         res.status(403).json({ message: "Access denied. users only." });
          return;
       }
 
@@ -67,4 +68,5 @@ class Authorization {
     }
   }
 }
+
 export default new Authorization;

@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema<IUser>({
     phone: {
         type: String,
         required: [true, "Phone number is required"],
-        match: [/^\+?\d{10,15}$/, "Invalid phone number format"]
+        // match: [/^\+?\d{10,15}$/, "Invalid phone number format"] coz seed
     },
     created_at: {
         type: Date,
