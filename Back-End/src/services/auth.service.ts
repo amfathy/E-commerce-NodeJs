@@ -10,7 +10,7 @@ dotenv.config();
 class AuthService {
 
 
-  async UserRegistration(data: any) {
+  async registration(data: any , role :UserRole ) {
     try {
       const { street, city, state, zip }: Address = data.address;
       const { name, email, password, address, phone }: IUser = data;
@@ -34,7 +34,7 @@ class AuthService {
         email,
         password: hashedPassword,
         address: addressOfUser._id,
-        role: UserRole.User,
+        role: role,
         phone,
       });
 

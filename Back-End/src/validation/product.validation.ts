@@ -1,5 +1,5 @@
 import { z , object } from "zod";
-import idvalidation from "./objectIdValidation";
+import {objectIdSchema} from "./objectIdValidation";
 
 export const productValidation = z.object({
   body : object({
@@ -15,8 +15,8 @@ export const productValidation = z.object({
 
     price: z.coerce.number().min(0, "Price must be a positive number"),
 
-    category_id: idvalidation.objectIdSchema,
-    subcategory_id: idvalidation.objectIdSchema,
+    category_id: objectIdSchema,
+    subcategory_id: objectIdSchema,
 
     isStock: z.boolean().optional(),
 

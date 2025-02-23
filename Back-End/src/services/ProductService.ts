@@ -1,6 +1,5 @@
 import Product from "../models/product.model";
 import IProduct from "../interfaces/Product";
-import validateId from "../validation/objectIdValidation";
 
 class ProductService {
   async createProduct(data: IProduct, images: string[]) {

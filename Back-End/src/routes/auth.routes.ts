@@ -5,9 +5,13 @@ import {registerValidation , loginValidation} from '../validation/auth.validatio
 const router = express.Router(); 
 
 //validate user's info before register 
-router.post('/register', validateResource(registerValidation) , auth.RegisterAsUser); 
+router.post('/registerAsUser', validateResource(registerValidation) , auth.RegisterAsUser); 
+
+//register as Admin 
+router.post('/registerAsAdmin', validateResource(registerValidation) , auth.RegisterAsAdmin); 
+
 
 //validate user's info before login
-router.post('/login' ,validateResource(loginValidation) ,auth.LoginAsUser);
+router.post('/login' ,validateResource(loginValidation) ,auth.Login);
 
 export default router; 

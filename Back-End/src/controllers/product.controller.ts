@@ -36,7 +36,6 @@ class ProductController {
         res.status(400).json({ success: false, message: "Product ID is required", data: null });
         return;
       }
-
       const selectedProduct = await ProductService.getProductByID(id);
       res.status(selectedProduct.success ? 200 : 400).json(selectedProduct);
     } catch (err) {
