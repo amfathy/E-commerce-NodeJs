@@ -1,5 +1,5 @@
-import { IUser, UserRole, Address } from "../interfaces/User";
-import userSchema from "../models/user.model";
+import { IAddress, IUser, IUserRole } from "../interfaces/User";
+import {User , Address} from "../models/user.model";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import hash from "../utils/hashPassword";
@@ -10,9 +10,9 @@ dotenv.config();
 class AuthService {
 
 
-  async registration(data: any , role :UserRole ) {
+  async registration(data: any , role :IUserRole ) {
     try {
-      const { street, city, state, zip }: Address = data.address;
+      const { street, city, state, zip }: IAddress = data.address;
       const { name, email, password, address, phone }: IUser = data;
       const isExist = this.FindUserByEmail(email);
       if (!isExist) {
@@ -21,7 +21,7 @@ class AuthService {
           message: "Email existed",
         };
       }
-      const addressOfUser = await userSchema.address.create({
+      const addressOfUser = await Address.create({
         street,
         city,
         state,
@@ -29,7 +29,7 @@ class AuthService {
       });
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      const userCreated = await userSchema.User.create({
+      const userCreated = await User.create({
         name,
         email,
         password: hashedPassword,
@@ -60,7 +60,7 @@ class AuthService {
 
   async FindUserByEmail(Email: string) {
     try {
-      const user = await userSchema.User.findOne({ email: Email });
+      const user = await User.findOne({ email: Email });
       return user;
     } catch (error) {
       throw error;
@@ -71,7 +71,7 @@ class AuthService {
   {
     const { email, password } = data;
 
-    const user = await userSchema.User.findOne({ email });
+    const user = await User.findOne({ email });
 
     if (!user) {
       return{

@@ -10,6 +10,7 @@ import RegisterRouter from './routes/auth.routes'
 import DbaseConnection from './config/dataBase';
 import ErrorHandler from './middlewares/error.middleware'
 import morgan from 'morgan'
+import helmet from 'helmet';
 
 
 // import helmet from 'helmet'
@@ -31,7 +32,7 @@ app.use('/uploads', express.static(uploadsPath));
 
 app.use(cors(corsOptions));
 app.use(express.json());
-//app.use(helmet()); //imgs 
+app.use(helmet()); 
 app.use(morgan('dev'));
 app.use('/user' ,RegisterRouter );
 app.use('/users', userRouter);

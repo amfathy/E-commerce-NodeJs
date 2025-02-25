@@ -1,6 +1,6 @@
-import { Types } from "mongoose";
+import { Types , Document} from "mongoose";
 
-interface IOrder {
+interface IOrder extends Document{
     user_id: Types.ObjectId;
     items: IOrderItem[];
     total: number;
@@ -10,7 +10,7 @@ interface IOrder {
 
 }
 
-interface IOrderItem {
+interface IOrderItem extends Document{
     quantity: number; 
     price: number; 
     product_id: Types.ObjectId;

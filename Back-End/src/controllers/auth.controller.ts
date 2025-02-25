@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import authService from "../services/auth.service";
-import {UserRole} from "../interfaces/User"
+import {IUserRole} from "../interfaces/User"
 const RegisterAsUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const Registering = await authService.registration(req.body , UserRole.User);
+    const Registering = await authService.registration(req.body , IUserRole.User);
     if (!Registering.success) res.status(400).json(Registering);
 
     res.status(201).json(Registering);
@@ -16,7 +16,7 @@ const RegisterAsUser = async (req: Request, res: Response): Promise<void> => {
 
 const RegisterAsAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
-    const Registering = await authService.registration(req.body , UserRole.Admin);
+    const Registering = await authService.registration(req.body , IUserRole.Admin);
     if (!Registering.success) res.status(400).json(Registering);
 
     res.status(201).json(Registering);

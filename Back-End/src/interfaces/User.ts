@@ -1,28 +1,29 @@
- enum UserRole {
+ import { Document } from "mongoose";
+ enum IUserRole {
     Admin = 'admin',
     User = 'user',
 }
 
- type Address = {
+ type IAddress = {
     street:String;
     city:String;
     state:String;
     zip:String;
 }
 
- interface IUser {
+ interface IUser extends Document {
     name:string;
     email:string;
     password:string;
-    role : UserRole;
-    address:Address;
+    role : IUserRole;
+    address:IAddress;
     phone:string;
     created_at:Date;
     updated_at:Date;
 
 }
-export type{ Address , IUser}; 
-export {UserRole};
+export type{ IAddress , IUser}; 
+export {IUserRole};
  
 
 

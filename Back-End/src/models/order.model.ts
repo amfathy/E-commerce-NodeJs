@@ -1,7 +1,6 @@
 import { IOrderItem, OrderStatus, IOrder } from "../interfaces/Order";
 import mongoose from "mongoose";
 
-// Order Item Schema
 const orderItemSchema = new mongoose.Schema<IOrderItem>({
     product_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -20,7 +19,6 @@ const orderItemSchema = new mongoose.Schema<IOrderItem>({
     },
 });
 
-// Order Schema
 const orderSchema = new mongoose.Schema<IOrder>({
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
@@ -57,17 +55,12 @@ const orderSchema = new mongoose.Schema<IOrder>({
     }
 });
 
-// Pre-save hook to update the `updated_at` field
 orderSchema.pre<IOrder>('save', function (next) {
     this.updated_at = new Date();
     next();
 });
 
-// Models
-const OrderItem = mongoose.model<IOrderItem>('OrderItem', orderItemSchema);
-const Order = mongoose.model<IOrder>('Order', orderSchema);
+export const OrderItem = mongoose.model<IOrderItem>('OrderItem', orderItemSchema);
+export const Order = mongoose.model<IOrder>('Order', orderSchema);
 
-export default {
-    OrderItem,
-    Order,
-};
+

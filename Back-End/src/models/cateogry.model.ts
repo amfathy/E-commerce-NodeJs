@@ -1,5 +1,5 @@
 import ICategory from "../interfaces/Category";
-import mongoose, { Schema, Document } from "mongoose";
+import { Schema, model } from "mongoose";
 
 // Define the schema
 const categorySchema = new Schema<ICategory>({
@@ -36,6 +36,6 @@ categorySchema.path("name").validate((value: string) => {
     return /^[a-zA-Z0-9\s]+$/.test(value);
 }, "Category name can only contain alphanumeric characters and spaces");
 
-const Category = mongoose.model<ICategory>("Category", categorySchema);
+export const Category = model<ICategory>("Category", categorySchema);
 
-export default Category;
+  

@@ -31,6 +31,5 @@ subcategorySchema.pre<ISubcategory>('save', function (next) {
     next();
 });
 
-// Model creation
-const Subcategory = mongoose.model<ISubcategory>('Subcategory', subcategorySchema);
-export default Subcategory;
+export const Subcategory = mongoose.model<ISubcategory>('Subcategory', subcategorySchema);
+

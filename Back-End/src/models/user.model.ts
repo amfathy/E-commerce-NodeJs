@@ -1,7 +1,7 @@
-import mongoose, { Schema, Types } from "mongoose";
-import { IUser, UserRole, Address } from "../interfaces/User";
+import mongoose, { Types } from "mongoose";
+import { IUser, IUserRole, IAddress } from "../interfaces/User";
 
-const addressSchema = new mongoose.Schema<Address>({
+const addressSchema = new mongoose.Schema<IAddress>({
     street: {
         type: String,
         required: [true, "Street is required"],
@@ -49,8 +49,8 @@ const userSchema = new mongoose.Schema<IUser>({
     },
     role: {
         type: String,
-        enum: Object.values(UserRole),
-        default: UserRole.User,
+        enum: Object.values(IUserRole),
+        default: IUserRole.User,
     },
     address: {
         type: Types.ObjectId,
@@ -60,7 +60,7 @@ const userSchema = new mongoose.Schema<IUser>({
     phone: {
         type: String,
         required: [true, "Phone number is required"],
-        // match: [/^\+?\d{10,15}$/, "Invalid phone number format"] coz seed
+        // match: [/^\+?\d{10,15}$/, "Invalid phone number format"]            coz seed
     },
     created_at: {
         type: Date,
@@ -74,11 +74,5 @@ const userSchema = new mongoose.Schema<IUser>({
 
 
 
-const address = mongoose.model<Address>("Address", addressSchema);
-const User = mongoose.model<IUser>("User", userSchema);
-
-
-export default {
-    User,
-    address
-};
+export const Address = mongoose.model<IAddress>("Address", addressSchema);
+export const User = mongoose.model<IUser>("User", userSchema);
