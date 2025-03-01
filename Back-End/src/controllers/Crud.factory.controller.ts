@@ -28,8 +28,10 @@ export const getAllEntities = <T extends Document>(model: Model<T>) =>
     const data = await Pagination(model, pageNumber, Limit, query);
     if (!data.success) {
       res.status(404).json(data.message);
+      return ; 
     }
     res.status(200).json({ message: "retrived successfully", Data: data });
+    return ; 
   };
 
 
@@ -56,8 +58,10 @@ export const createEntity = <T extends Document>(model: Model<T>) =>
       const doc = await Model.create(req.body);
       if (!doc) res.status(400).json({ message: "Error in creation" });
       res.status(201).json({ message: "Created successfully", data: doc });
+      return ; 
     } catch (err) {
       res.status(400).json({ message: "Bad Request", error: err });
+      return ; 
     }
   };
 
@@ -73,6 +77,7 @@ export const deleteEntity = <T extends Document>(model: Model<T>)=>
       }
 
       res.status(200).json({ message: "Deleted successfully" });
+      return ; 
     } catch (err) {
       res.status(400).json({ message: "Bad Request", error: err });
     }

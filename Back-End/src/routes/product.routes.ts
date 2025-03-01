@@ -10,15 +10,17 @@ const router = express.Router();
 //create product by Admin
 router.post('/create' ,Authorization.IsAdmin, upload.array('images' , 5 ) ,validateResource(productValidation) , productController.createProduct); 
 
-//get all product info <<need enhancments>>
-router.get('/' , productController.getProducts); 
+//get all product info 
+router.get('/' , productController.getAllProduct); 
 
 //get product byId 
-router.get('/:id' ,validateResource(validateId) ,productController.getProductById);
+router.get('/:id' ,validateResource(validateId) ,productController.getProduct);
 
 //change product details 
-router.post('/editProduct' ,Authorization.IsAdmin ,productController.changeProductDetails);
+router.post('/editProduct' ,Authorization.IsAdmin ,productController.updateProduct);
 
+//delete specific product by id   //need to affect multer !!! 
+//router.delete('/delete' , Authorization.IsAdmin , productController.deleteProduct); 
 
 export default router ; 
 

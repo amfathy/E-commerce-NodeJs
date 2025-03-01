@@ -16,9 +16,9 @@ router.get('/:id', Authorization.IsUser, getOrder);
 router.post('/create', Authorization.IsUser, validateResource(orderValidation), createOrder);
 
 // Update an order by ID
-router.put('/:id', Authorization.IsUser, validateResource(orderValidation), updateOrder);
+router.put('/update/:id', Authorization.IsUser, validateResource(orderValidation), updateOrder);
 
 // Delete an order by ID
-router.delete('/:id', Authorization.IsAdmin, deleteOrder);
+router.delete('/delete/:id', Authorization.IsAdmin, deleteOrder);
 
 export default router;

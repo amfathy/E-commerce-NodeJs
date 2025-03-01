@@ -16,13 +16,10 @@ export const Pagination = async <T extends Document>(
     const skip = (page - 1) * limit;
     const hasFilters = Object.keys(queryString).length > 0; 
 
-    const data = hasFilters?  await model.find().skip(skip).limit(limit)
-    : await model.find(queryString).skip(skip).limit(limit);
-    console.log("Fetched Data:", data); 
+    const data = hasFilters?  await model.find(queryString).skip(skip).limit(limit).lean()
+    : await model.find().skip(skip).limit(limit).lean();
   
-    const totalItems = await model.countDocuments();
-    console.log("Total Items:", totalItems); 
-  
+    const totalItems = await model.countDocuments();  
     const totalPages = Math.ceil(totalItems / limit);
   
     if (data.length === 0) {

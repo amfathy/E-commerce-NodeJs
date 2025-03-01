@@ -1,8 +1,9 @@
 import { Types } from "mongoose";
 import ICategory from "./Category";
 import ISubcategory from "./Subcategory";
+import { Document } from "mongoose";
 
-interface IProduct {
+interface IProduct extends Document {
     name:string;
     description:string;
     price:number;
