@@ -19,11 +19,13 @@ export const getEntity = <T extends Document>(model: Model<T>) =>
 
 export const getAllEntities = <T extends Document>(model: Model<T>) => 
   async (req: Request, res: Response): Promise<void> => {
-    const pageNumber = parseInt(req.query.page as string) || 1;
-    const limit = parseInt(req.query.limit as string) || 10;
 
-    const query: Record<string, any> = { ...req.query };
-    const data = await Pagination(model, pageNumber, limit, query);
+    let { page, limit, ...filters } = req.query;
+    const pageNumber = parseInt(page as string) || 1;
+    const Limit = parseInt(limit as string) || 10
+
+    const query: Record<string, any> = { ...filters };
+    const data = await Pagination(model, pageNumber, Limit, query);
     if (!data.success) {
       res.status(404).json(data.message);
     }
@@ -38,7 +40,6 @@ export const updateEntity =
     const updatedField = await model.findByIdAndUpdate(id, req.body, {
       new: true,
     });
-
 
     if (!updatedField) {
       res.status(404).json({ message: "No document found with this ID" });
