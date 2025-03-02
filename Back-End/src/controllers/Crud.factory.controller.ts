@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { Document, Model } from "mongoose";
-import { Pagination } from "../utils/Pagination";
+import  ApiFeatures  from "../utils/ApiFeature";
 
 export const getEntity = <T extends Document>(model: Model<T>) => 
   async (req: Request, res: Response): Promise<void> => {
@@ -19,17 +19,9 @@ export const getEntity = <T extends Document>(model: Model<T>) =>
 
 export const getAllEntities = <T extends Document>(model: Model<T>) => 
   async (req: Request, res: Response): Promise<void> => {
-
-    let { page, limit, ...filters } = req.query;
-    const pageNumber = parseInt(page as string) || 1;
-    const Limit = parseInt(limit as string) || 10
-
-    const query: Record<string, any> = { ...filters };
-    const data = await Pagination(model, pageNumber, Limit, query);
-    if (!data.success) {
-      res.status(404).json(data.message);
-      return ; 
-    }
+    const data = await new ApiFeatures(model.find() , req.query).paginate().filter().sort().limitFields().query;
+    //const totalCount = await Model.countDocuments();
+    //const totalPages = Math.floor(totalCount / (req.query.limit ? +req.query.limit : 10));
     res.status(200).json({ message: "retrived successfully", Data: data });
     return ; 
   };
