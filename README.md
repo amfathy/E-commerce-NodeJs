@@ -1,33 +1,53 @@
-# 🛒 E-Commerce API — Node.js · TypeScript · MongoDB
+<div align="center">
 
-A RESTful e-commerce back-end built with **Express, TypeScript and Mongoose**, designed around a small set of well-known **design patterns** so that adding a new resource takes a few lines instead of a few hundred.
+# 🛒 E-Commerce API
 
-![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?logo=typescript&logoColor=white)
-![Node](https://img.shields.io/badge/Node.js-Express_4-339933?logo=node.js&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose_8-47A248?logo=mongodb&logoColor=white)
-![Zod](https://img.shields.io/badge/Validation-Zod-3E67B1)
-![JWT](https://img.shields.io/badge/Auth-JWT-000000?logo=jsonwebtokens)
+**A RESTful e-commerce back-end where design patterns do the heavy lifting.**
+Adding a new resource takes a few lines instead of a few hundred.
+
+<br>
+
+![TypeScript](https://img.shields.io/badge/TypeScript-5.7-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Node](https://img.shields.io/badge/Node.js-Express_4-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose_8-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![Zod](https://img.shields.io/badge/Validation-Zod-3E67B1?style=for-the-badge)
+![JWT](https://img.shields.io/badge/Auth-JWT-000000?style=for-the-badge&logo=jsonwebtokens)
+
+<br>
+
+[Features](#-features) ·
+[Patterns](#-the-power-of-patterns) ·
+[Structure](#%EF%B8%8F-project-structure) ·
+[Getting Started](#-getting-started) ·
+[API](#-api-overview) ·
+[Roadmap](#%EF%B8%8F-roadmap)
+
+</div>
 
 ---
 
 ## ✨ Features
 
-- 🔐 **JWT authentication** with role-based access (`admin` / `user`)
-- 📦 Full **CRUD** for users, products, categories, subcategories and orders
-- 🔎 **Advanced querying** on every list endpoint: filtering, sorting, field selection, pagination
-- 🖼️ **Image upload** for products (Multer: type filter, 5 MB limit, up to 5 images)
-- ✅ **Schema-based request validation** with Zod (body, query and params)
-- 🛡️ Security middleware (Helmet, CORS) and bcrypt password hashing
-- 🌱 **Seed scripts** using Faker (up to 30,000 products) for realistic load testing
-- 🧱 Centralized error handling
+| | |
+|---|---|
+| 🔐 **Authentication** | JWT with role-based access (`admin` / `user`) |
+| 📦 **Full CRUD** | Users, products, categories, subcategories and orders |
+| 🔎 **Advanced querying** | Filtering, sorting, field selection and pagination on every list endpoint |
+| 🖼️ **Image upload** | Multer with type filter, 5 MB limit, up to 5 images per product |
+| ✅ **Validation** | Schema-based with Zod for body, query and params |
+| 🛡️ **Security** | Helmet, CORS and bcrypt password hashing |
+| 🌱 **Seed scripts** | Faker-powered, up to 30,000 products for realistic load testing |
+| 🧱 **Error handling** | One centralized error middleware |
 
 ---
 
 ## 🧠 The Power of Patterns
 
-The main idea of this project: **write the behavior once, reuse it everywhere.** These are the patterns used and what each one buys you.
+> **The main idea:** write the behavior once, reuse it everywhere.
+> These are the patterns used and what each one buys you.
 
-### 1. Layered Architecture — separation of concerns
+### 1 · Layered Architecture
+*Separation of concerns*
 
 ```mermaid
 flowchart LR
@@ -42,19 +62,20 @@ flowchart LR
 
 | Layer | Folder | Responsibility |
 |---|---|---|
-| Routes | `src/routes` | Map URL + HTTP verb to a chain of handlers |
-| Middlewares | `src/middlewares` | Cross-cutting concerns: auth, validation, uploads, errors |
-| Controllers | `src/controllers` | Translate HTTP ⇄ application calls |
-| Services | `src/services` | Business logic (registration, login, product creation) |
-| Models | `src/models` | Mongoose schemas and data-level rules |
-| Validation | `src/validation` | Zod schemas describing valid input |
-| Interfaces | `src/interfaces` | Shared TypeScript contracts and enums |
+| 🛣️ Routes | `src/routes` | Map URL + HTTP verb to a chain of handlers |
+| 🧩 Middlewares | `src/middlewares` | Cross-cutting concerns: auth, validation, uploads, errors |
+| 🎮 Controllers | `src/controllers` | Translate HTTP ⇄ application calls |
+| ⚙️ Services | `src/services` | Business logic (registration, login, product creation) |
+| 🗄️ Models | `src/models` | Mongoose schemas and data-level rules |
+| ✅ Validation | `src/validation` | Zod schemas describing valid input |
+| 📐 Interfaces | `src/interfaces` | Shared TypeScript contracts and enums |
 
 Each layer can change without rewriting the others.
 
----
+<br>
 
-### 2. Factory / Higher-Order Function — the generic CRUD controller ⭐
+### 2 · Factory / Higher-Order Function ⭐
+*The generic CRUD controller*
 
 `src/controllers/Crud.factory.controller.ts` exposes functions that **take a Mongoose model and return a ready-made Express handler**:
 
@@ -67,26 +88,28 @@ Because of this, an entire controller is a handful of lines:
 
 ```ts
 // category.controller.ts
-export const createCategory  = createEntity(Category);
-export const getCategory     = getEntity(Category);
+export const createCategory   = createEntity(Category);
+export const getCategory      = getEntity(Category);
 export const getAllCategories = getAllEntities(Category);
-export const updateCategory  = updateEntity(Category);
-export const deleteCategory  = deleteEntity(Category);
+export const updateCategory   = updateEntity(Category);
+export const deleteCategory   = deleteEntity(Category);
 ```
 
 `user`, `order`, `category` and `subcategory` all reuse the exact same factory, and `product` reuses it for everything except creation, which needs image handling.
 
-| Without the pattern | With the pattern |
+| ❌ Without the pattern | ✅ With the pattern |
 |---|---|
 | ~5 handlers × 5 resources = **25 handlers** to write and maintain | **5 generic handlers** + 5 lines per resource |
 | A bug fix is repeated 5 times | A bug fix is made **once** and applies everywhere |
 | Behavior drifts between resources | Every resource behaves consistently |
 
-A new `Coupon` resource is: one model, one Zod schema, five one-line exports.
+> [!TIP]
+> A new `Coupon` resource is: one model, one Zod schema, five one-line exports.
 
----
+<br>
 
-### 3. Builder / Fluent Interface — `ApiFeatures`
+### 3 · Builder / Fluent Interface
+*`ApiFeatures`*
 
 `src/utils/ApiFeature.ts` builds a Mongoose query step by step through **method chaining**:
 
@@ -102,16 +125,17 @@ Every list endpoint therefore gets these query options for free:
 
 | Feature | Example |
 |---|---|
-| Pagination | `?page=2&limit=20` |
-| Sorting | `?sort=-price,name` |
-| Field selection | `?fields=name,price` |
-| Filtering with operators | `?price[gte]=100&price[lte]=500` |
+| 📄 Pagination | `?page=2&limit=20` |
+| ↕️ Sorting | `?sort=-price,name` |
+| 🎯 Field selection | `?fields=name,price` |
+| 🔍 Filtering with operators | `?price[gte]=100&price[lte]=500` |
 
 Each capability is an independent, composable method. Adding search or populate later means adding one method, not touching the controllers.
 
----
+<br>
 
-### 4. Strategy via Higher-Order Middleware — `validateResource(schema)`
+### 4 · Strategy via Higher-Order Middleware
+*`validateResource(schema)`*
 
 One generic middleware, many interchangeable validation strategies:
 
@@ -125,9 +149,10 @@ router.post('/create',
 
 Zod schemas live in `src/validation`, so **invalid input never reaches business logic**. Shared building blocks such as `objectIdSchema` are reused across schemas.
 
----
+<br>
 
-### 5. Chain of Responsibility — the Express middleware pipeline
+### 5 · Chain of Responsibility
+*The Express middleware pipeline*
 
 Each route is a readable pipeline in which every handler does one job and passes the request on (or stops it):
 
@@ -146,9 +171,9 @@ flowchart LR
 
 Security, validation and file handling are declared **at the route**, not buried in controllers, so a route's rules can be read at a glance.
 
----
+<br>
 
-### 6. Service Layer + Singleton
+### 6 · Service Layer + Singleton
 
 `AuthService` and `ProductService` hold the business logic and are exported as **single shared instances**:
 
@@ -158,17 +183,19 @@ export default new AuthService();
 
 Controllers stay thin. They call `authService.login(req.body)` and format the response. The logic (bcrypt comparison, JWT signing, address creation) can be reused or unit-tested without HTTP.
 
----
+<br>
 
-### 7. Centralized Error Handling
+### 7 · Centralized Error Handling
 
 A single error middleware (`error.middleware.ts`) is registered last in `index.ts`, giving one place to shape error responses.
 
-### 8. Type-Safe Domain Modeling
+<br>
 
-- Interfaces (`IUser`, `IProduct`, `IOrder`, …) and enums (`IUserRole`, `OrderStatus`) are shared between models, services and validation.
-- Generics (`<T extends Document>`) let one factory stay fully typed for every model.
-- Mongoose **pre-save hooks** keep `updated_at` current automatically.
+### 8 · Type-Safe Domain Modeling
+
+- 📐 Interfaces (`IUser`, `IProduct`, `IOrder`, …) and enums (`IUserRole`, `OrderStatus`) are shared between models, services and validation.
+- 🧬 Generics (`<T extends Document>`) let one factory stay fully typed for every model.
+- 🕒 Mongoose **pre-save hooks** keep `updated_at` current automatically.
 
 ---
 
@@ -177,19 +204,19 @@ A single error middleware (`error.middleware.ts`) is registered last in `index.t
 ```
 Back-End/
 ├── src/
-│   ├── index.ts                 # app bootstrap & route registration
-│   ├── config/dataBase.ts       # MongoDB connection
-│   ├── routes/                  # auth, user, product, category, subcategory, order
+│   ├── index.ts                         # app bootstrap & route registration
+│   ├── config/dataBase.ts               # MongoDB connection
+│   ├── routes/                          # auth, user, product, category, subcategory, order
 │   ├── controllers/
 │   │   ├── Crud.factory.controller.ts   # ⭐ generic CRUD factory
 │   │   └── *.controller.ts
-│   ├── services/                # auth.service.ts, ProductService.ts
-│   ├── middlewares/             # auth, upload, validate, error
-│   ├── validation/              # Zod schemas
-│   ├── models/                  # Mongoose models
-│   ├── interfaces/              # TS types & enums
-│   ├── utils/                   # ApiFeature (query builder), hashPassword
-│   └── faker/                   # seed scripts
+│   ├── services/                        # auth.service.ts, ProductService.ts
+│   ├── middlewares/                     # auth, upload, validate, error
+│   ├── validation/                      # Zod schemas
+│   ├── models/                          # Mongoose models
+│   ├── interfaces/                      # TS types & enums
+│   ├── utils/                           # ApiFeature (query builder), hashPassword
+│   └── faker/                           # seed scripts
 └── package.json
 ```
 
@@ -198,6 +225,7 @@ Back-End/
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js 18+
 - MongoDB running locally on `mongodb://127.0.0.1:27017`
 
@@ -222,7 +250,10 @@ JWT_EXPIRE_TIME=1d
 npm start              # nodemon src/index.ts  →  http://localhost:3000
 ```
 
-### Seed sample data (optional)
+<details>
+<summary><b>🌱 Seed sample data (optional)</b></summary>
+
+<br>
 
 Run in dependency order:
 
@@ -234,6 +265,8 @@ npx tsx src/faker/seedUsers.ts
 npx tsx src/faker/seedOrders.ts
 ```
 
+</details>
+
 ---
 
 ## 📡 API Overview
@@ -242,16 +275,16 @@ Send the JWT as `Authorization: Bearer <token>`.
 
 | Resource | Endpoints | Access |
 |---|---|---|
-| **Auth** `/user` | `POST /registerAsUser` · `POST /registerAsAdmin` · `POST /login` | Public |
-| **Users** `/users` | `GET /` · `GET /:id` · `POST /` · `PUT /:id` · `DELETE /:id` | Admin |
-| **Products** `/products` | `GET /` · `GET /:id` | Public |
-| | `POST /create` (multipart, field `images`) · `POST /editProduct` | Admin |
-| **Categories** `/categories` | `GET /` · `GET /:id` · `POST /create` · `PUT /update/:id` · `DELETE /delete/:id` | Admin |
-| **Subcategories** `/subcategories` | `GET /` · `GET /:id` · `POST /create` · `PUT /:id` · `DELETE /:id` | Admin |
-| **Orders** `/orders` | `POST /create` · `GET /:id` · `PUT /update/:id` | User |
-| | `GET /` · `DELETE /delete/:id` | Admin |
+| 🔑 **Auth** `/user` | `POST /registerAsUser` · `POST /registerAsAdmin` · `POST /login` | 🌐 Public |
+| 👥 **Users** `/users` | `GET /` · `GET /:id` · `POST /` · `PUT /:id` · `DELETE /:id` | 🛡️ Admin |
+| 📦 **Products** `/products` | `GET /` · `GET /:id` | 🌐 Public |
+| | `POST /create` (multipart, field `images`) · `POST /editProduct` | 🛡️ Admin |
+| 🗂️ **Categories** `/categories` | `GET /` · `GET /:id` · `POST /create` · `PUT /update/:id` · `DELETE /delete/:id` | 🛡️ Admin |
+| 🏷️ **Subcategories** `/subcategories` | `GET /` · `GET /:id` · `POST /create` · `PUT /:id` · `DELETE /:id` | 🛡️ Admin |
+| 🧾 **Orders** `/orders` | `POST /create` · `GET /:id` · `PUT /update/:id` | 👤 User |
+| | `GET /` · `DELETE /delete/:id` | 🛡️ Admin |
 
-### Example
+### Examples
 
 ```bash
 # Login
@@ -269,14 +302,14 @@ curl "http://localhost:3000/products?price[lte]=100&sort=-price&page=2&limit=10&
 
 | Concern | Tool |
 |---|---|
-| Runtime / Framework | Node.js, Express 4 |
-| Language | TypeScript |
-| Database / ODM | MongoDB, Mongoose 8 |
-| Validation | Zod |
-| Auth | jsonwebtoken, bcrypt / bcryptjs |
-| Uploads | Multer |
-| Security / Logging | Helmet, CORS, Morgan |
-| Test data | @faker-js/faker |
+| ⚙️ Runtime / Framework | Node.js, Express 4 |
+| 🟦 Language | TypeScript |
+| 🍃 Database / ODM | MongoDB, Mongoose 8 |
+| ✅ Validation | Zod |
+| 🔐 Auth | jsonwebtoken, bcrypt / bcryptjs |
+| 🖼️ Uploads | Multer |
+| 🛡️ Security / Logging | Helmet, CORS, Morgan |
+| 🌱 Test data | @faker-js/faker |
 
 ---
 
@@ -291,6 +324,8 @@ curl "http://localhost:3000/products?price[lte]=100&sort=-price&page=2&limit=10&
 
 ---
 
-## 👤 Author
+<div align="center">
 
-**amfathy** — [GitHub](https://github.com/amfathy)
+**Built by [amfathy](https://github.com/amfathy)**
+
+</div>
